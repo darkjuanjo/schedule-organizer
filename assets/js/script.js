@@ -174,4 +174,5 @@ var load = () => {
 }
 
 load();
+currentdayEl.text(date);
 check_date(date);
