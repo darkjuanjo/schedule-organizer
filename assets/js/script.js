@@ -1,5 +1,6 @@
 var currentdayEl = $("#currentDay");
 var array_rowsEl = $(".row");
+var storage;
 var date = moment().format("dddd, MMMM DD, Y hh:mm:ss A");
 var set_time = setInterval(() => {
     date = moment().format("dddd, MMMM DD, Y hh:mm:ss A");
@@ -42,6 +43,11 @@ $(".saveBtn").on("click", function() {
     let text_area = $(element).find("textarea");
     let task = $(element).find("textarea").val();
     let current_button = this;
+    if($(text_area).val() === "")
+    {
+        $(current_button).removeClass("save_ok");
+        $(current_button).removeClass("save_err");
+    }
     
     if($(text_area).hasClass("past") == false)
     {
@@ -49,8 +55,23 @@ $(".saveBtn").on("click", function() {
     }
  } );
 
+ $("textarea").on("change", function(){
+    var button = $(this).closest("div[id]").find(".saveBtn");
+    var id = $(this).closest("div[id]").attr('id');
+    var task = $(this).val();
+    var same = samevalue(storage,id,task);
+        if(!same)
+        {
+        $(button).removeClass("save_ok");
+        $(button).removeClass("save_err");
+        }
+        else{
+            $(button).addClass("save_ok");
+        }
+})
+
  var save = (id, task, button) => {
-    var storage = JSON.parse(localStorage.getItem("schedule")) || [];
+    storage = JSON.parse(localStorage.getItem("schedule")) || [];
     var data = {
         id: id,
         task: task
@@ -83,10 +104,14 @@ $(".saveBtn").on("click", function() {
             }
         }
          localStorage.setItem("schedule", JSON.stringify(storage));
+         if(storage.length !== 0 && task!== "")
+         {
+         $(button).addClass("save_ok")
+         }
     }
     catch{
         alert("Error Saving!");
-        console.log("Error Saving!");
+        $(button).addClass("save_err");
     }
 };
 
@@ -99,6 +124,18 @@ var inlist = (array, id) => {
         }
     }
     return -1
+};
+
+var samevalue = (array, id, task) => {
+
+    for(let i = 0; i < array.length; i++){
+        if(array[i].id === id)
+        {
+            if(array[i].task === task)
+         return true   
+        }
+    }
+    return false
 };
 
 var removeitem = (array, position) => {
@@ -115,7 +152,7 @@ var removeitem = (array, position) => {
 };
 
 var load = () => {
-    var storage = JSON.parse(localStorage.getItem("schedule")) || [];
+    storage = JSON.parse(localStorage.getItem("schedule")) || [];
     // console.log(elements);
     if(storage.length !== 0)
     {
@@ -125,6 +162,10 @@ var load = () => {
             {
                 if($(array_rowsEl[inner]).attr('id') === storage[outer].id){
                     $(array_rowsEl[inner]).find("textarea").val(storage[outer].task);
+                    $(array_rowsEl[inner])
+                    .closest("div[id]")
+                    .find(".saveBtn")
+                    .addClass("save_ok");
                 }
             }
         }
