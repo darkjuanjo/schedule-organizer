@@ -1,12 +1,12 @@
 var currentdayEl = $("#currentDay");
+var array_rowsEl = $(".row");
 var set_time = setInterval(() => {
     var date = moment().format("dddd, MMMM DD, Y hh:mm:ss A");
     currentdayEl.text(date);
     check_date(date);
 }, 1000);
 
-var check_date = (date) => {
-    var array_rowsEl = $(".row");
+var check_date = date => {
     for(var i = 0; i < array_rowsEl.length; i++)
     {
         var current_time = moment(date).format("h");
