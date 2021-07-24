@@ -1,7 +1,8 @@
 var currentdayEl = $("#currentDay");
 var array_rowsEl = $(".row");
+var date = moment().format("dddd, MMMM DD, Y hh:mm:ss A");
 var set_time = setInterval(() => {
-    var date = moment().format("dddd, MMMM DD, Y hh:mm:ss A");
+    date = moment().format("dddd, MMMM DD, Y hh:mm:ss A");
     currentdayEl.text(date);
     check_date(date);
 }, 1000);
@@ -112,3 +113,23 @@ var removeitem = (array, position) => {
 
     return new_array;
 };
+
+var load = () => {
+    var storage = JSON.parse(localStorage.getItem("schedule")) || [];
+    // console.log(elements);
+    if(storage.length !== 0)
+    {
+        for(let outer = 0; outer < storage.length; outer++)
+        {
+            for(let inner = 0; inner < array_rowsEl.length; inner++)
+            {
+                if($(array_rowsEl[inner]).attr('id') === storage[outer].id){
+                    $(array_rowsEl[inner]).find("textarea").val(storage[outer].task);
+                }
+            }
+        }
+    }
+}
+
+load();
+check_date(date);
