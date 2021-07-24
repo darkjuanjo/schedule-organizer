@@ -110,8 +110,9 @@ $(".saveBtn").on("click", function() {
          }
     }
     catch{
-        alert("Error Saving!");
         $(button).addClass("save_err");
+        alert("Error Saving!");
+        
     }
 };
 
